@@ -2,6 +2,7 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 
 function useFetch({api, delay, query}) {
+    // console.log(api, "api", query, delay)
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -10,8 +11,8 @@ function useFetch({api, delay, query}) {
         try {
             setError(null)
             const res = await axios.get(api, {signal})
-            console.log(res.data.items, "items")
-            setData(res.data.items)
+            // console.log(res.data, "items")
+            setData(res)
         } catch (error) {
             setData([])
             if(error.message!=="canceled"){
