@@ -5,11 +5,11 @@ import Gitprofiles from "./pages/Gitprofiles"
 
 function App() {
   return (
-    <div>
+    <div className="mt-10">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<GitRepos />} />
-          <Route path="/:id" element={<Gitprofiles />} />
+          <Route path="/" element={<Gitprofiles />} />
+          <Route path="/:id" element={<GitRepos />} />
         </Routes>
       </BrowserRouter>
     </div>
