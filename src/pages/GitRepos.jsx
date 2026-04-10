@@ -1,5 +1,5 @@
 // import { useEffect } from "react"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import useFetch from "../components/useFetch"
 import { useEffect, useMemo, useState } from "react"
 
@@ -10,10 +10,11 @@ function GitRepos() {
   const [sortByForks, setSortByForks] = useState("Default")
   const [sortByStars, setSortByStars] = useState("Default")
   const [FilterByLanguage, setFilterByLanguage] = useState("All")
+  const navigate = useNavigate()
+
   const dataItems = useMemo(()=>(
         data?.data ?? []
   ), [data?.data])
-  console.log(data)
 
  
 
@@ -26,6 +27,7 @@ function GitRepos() {
     }
     return set
   },[dataItems])
+
   const[filteredValues,setFilteredValues]=useState([])
   useEffect(()=>{
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -53,48 +55,59 @@ function GitRepos() {
   return (
     <div className="flex flex-col justify-center w-full items-center">
       {loading && <h1>Loading ...</h1>}
-      {!loading && !dataItems.length && <h1>No Repos</h1>}
+      {!loading && !dataItems.length &&<div className="flex gap-10">
+        <button className="border px-2 py-1 rounded cursor-pointer" onClick={()=>navigate("/")}>Back</button>
+        <h1>No Repos</h1>
+      </div>}
       {error!== null && !loading && <h1>{error}</h1>}
       {!loading && dataItems.length && <div className="w-[80%]">
         <div className="flex gap-2">
+          <button className="border px-2 py-1 rounded cursor-pointer" onClick={()=>navigate("/")}>Back</button>
           <div>
             <label htmlFor="languageFilter">Filter by language</label>
             <select id="languageFilter" defaultValue={"All"} onChange={(e)=>setFilterByLanguage(e.target.value)} className=" outline-0 border rounded px-1" >
-              <option value="All">All</option>
+              <option value="All" className="text-black">All</option>
               {Array.from(set).map((lang)=>(
-                <option key={lang} value={lang}>{lang}</option>
+                <option key={lang} className="text-black" value={lang}>{lang}</option>
               ))}
             </select>
           </div>
           <div>
             <label htmlFor="forks">sort by forks</label>
-            <select id="forks" className=" outline-0 border rounded px-1" defaultValue={"Default"} onChange={(e)=>setSortByForks(e.target.value)}>
-                <option value="Default">Default</option>
-                <option value="Inc">Inc</option>
-                <option value="Dec">Dec</option>
+            <select id="forks" className="outline-0 border rounded px-1" defaultValue={"Default"} onChange={(e)=>setSortByForks(e.target.value)}>
+                <option value="Default" className="text-black">Default</option>
+                <option value="Inc"  className="text-black">Inc</option>
+                <option value="Dec"  className="text-black">Dec</option>
             </select>
           </div>
           <div>
             <label htmlFor="star">sort by stars</label>
             <select id="star"  className=" outline-0 border rounded px-1"  defaultValue={"Default"}  onChange={(e)=>setSortByStars(e.target.value)}>
-                <option value="Default">Default</option>
-                <option value="Inc">Inc</option>
-                <option value="Dec">Dec</option>
+                <option value="Default"  className="text-black">Default</option>
+                <option value="Inc"  className="text-black">Inc</option>
+                <option value="Dec"  className="text-black">Dec</option>
             </select>
           </div>
         </div>
         {filteredValues.map((ele)=>(
-          <div key={ele.id} className="shadow rounded mt-4 p-5 hover:shadow-gray-600">
-            <p>{ele.name}</p>
-            <p>{ele.id}</p>
-            <p>{ele.forks_count}</p>
-            <p>{ele.stargazers_count}</p>
+          <div key={ele.id} className="mt-4 p-5 shadow rounded-xl hover:shadow-xl shadow-gray-500">
+            <div className="flex gap-10">
+              <p>Repo :- {ele.name}</p>
+              {ele.html_url && 
+                <p><a target="_blank" href={ele.html_url} className="text-blue-500">git repo</a></p>
+              }
+            </div>
+            <p>Language :- {ele.language ? ele.language : "null"}</p>
+            <p>Id :- {ele.id}</p>
+            <p> forks_count :- {ele.forks_count}</p>
+            <p> stargazers_count :- {ele.stargazers_count}</p>
+            <p> description :- {ele.description ?ele.description : "no description found" }</p>
           </div>
         ))}
-        <div className='flex gap-10'>
-            <button onClick={()=>setPagination(prev=>({...prev, pagenumber:prev.pagenumber-1}))}>Prev</button>
+        <div className='flex gap-4 mb-10 mt-4'>
+            <button onClick={()=>setPagination(prev=>({...prev, pagenumber:prev.pagenumber-1}))} className="border rounded px-2" disabled={pagination.pagenumber<=1}>Prev</button>
             <p>{pagination.pagenumber}</p>
-            <button onClick={()=>setPagination(prev=>({...prev, pagenumber:prev.pagenumber+1}))}>Next</button>
+            <button onClick={()=>setPagination(prev=>({...prev, pagenumber:prev.pagenumber+1}))} className="border rounded px-2" disabled = {dataItems.length<pagination.pageSize}>Next</button>
         </div>
         </div>}
     </div>
