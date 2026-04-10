@@ -1,6 +1,6 @@
 import "./App.css"
 import {BrowserRouter, Routes, Route} from "react-router-dom"
-import GitRepos from "./pages/gitRepos"
+import GitRepos from "./pages/GitRepos"
 import Gitprofiles from "./pages/Gitprofiles"
 import Navbar from "./pages/Navbar"
 import WrapperRoute from "./components/WrapperRoute"
